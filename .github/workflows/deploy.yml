@@ -29,9 +29,7 @@ jobs:
         run: npm ci
 
       - name: Generate static site
-        run: npm run generate
-        env:
-          SKYLINE_BASE_URL: /mental-model-skyscraper-generator/
+        run: npm run generate --basePath='/mental-model-skyscraper-generator/'
 
       - uses: actions/upload-pages-artifact@v3
         with:
