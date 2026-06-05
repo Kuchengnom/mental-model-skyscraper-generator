@@ -1,49 +1,35 @@
 <script setup>
-  const localePath = useLocalePath();
+const localePath = useLocalePath();
 </script>
 
 <template>
-  <div
-      class="fixed w-full h-[50px] flex justify-between items-center px-5 border-b-[3px] border-green z-50 bg-primary_light"
-  >
-    <!-- Logo -->
-    <NuxtLink :to="localePath('/')">
-      <div class="flex flex-row items-center justify-center">
-        <img src="/favicon.ico" alt="icon" class="size-8 text-black mx-2.5" />
-        <!--<h1>{{ $t("navbar.logoTitle") }}</h1>-->
+  <nav class="fixed top-0 left-0 right-0 h-[52px] z-50
+              flex items-center justify-between px-6
+              bg-surface/90 backdrop-blur-md
+              border-b border-border shadow-sm shadow-ink/[0.04]">
+
+    <!-- Wordmark -->
+    <NuxtLink :to="localePath('/')" class="flex items-center gap-2.5 group no-underline">
+      <div class="w-6 h-6 bg-accent rounded-sm flex items-center justify-center shrink-0
+                  group-hover:bg-accent-dim transition-colors duration-200">
+        <img src="/favicon.ico" alt="" class="size-4" style="filter: brightness(0) invert(1);" />
       </div>
+      <span class="font-syne text-[11px] font-bold tracking-[0.22em] uppercase text-ink
+                   group-hover:text-accent transition-colors duration-200">
+        Skyline
+      </span>
     </NuxtLink>
-    <!-- Desktop Menu -->
-    <ul class="h-full flex items-center justify-center">
-      <li class="cursor-pointer">
-        <NuxtLink :to="localePath('/diagram')" class="btn-nav">
-          {{ $t("navbar.menu.diagram") }}
-        </NuxtLink>
-      </li>
-      <li class="cursor-pointer">
-        <NuxtLink :to="localePath('/about')" class="btn-nav">
-          {{ $t("navbar.menu.about") }}
-        </NuxtLink>
-      </li>
-      <li>
-          <LanguageSwitcher/>
-      </li>
-    </ul>
-  </div>
+
+    <!-- Nav links -->
+    <div class="flex items-center gap-1">
+      <NuxtLink :to="localePath('/diagram')" class="btn-nav">
+        {{ $t("navbar.menu.diagram") }}
+      </NuxtLink>
+      <NuxtLink :to="localePath('/about')" class="btn-nav">
+        {{ $t("navbar.menu.about") }}
+      </NuxtLink>
+      <div class="w-px h-3.5 bg-border mx-2"></div>
+      <LanguageSwitcher />
+    </div>
+  </nav>
 </template>
-
-
-<script>
-import {BuildingOffice2Icon} from "@heroicons/vue/24/outline/index.js";
-import {GlobeEuropeAfricaIcon} from "@heroicons/vue/24/solid/index.js";
-import {SunIcon} from "@heroicons/vue/24/solid/index.js";
-export default {
-  name: "Navbar",
-  components: {
-    BuildingOffice2Icon,
-    GlobeEuropeAfricaIcon,
-    SunIcon
-  },
-};
-</script>
-

@@ -1,111 +1,140 @@
 <template>
-  <div id="diagram" class="content-container">
-    <div id="buttonbar" class="w-full flex flex-row justify-center mb-8">
-      <!-- File Upload Input -->
-      <!-- <label>{{$t("common.fileUpload")}}</label> -->
-      <input
-          type="file"
-          ref="fileInput"
-          @change="onFileChange"
-          accept=".xlsx"
-          class="hidden"
-          style="display: none;"
-      />
+  <div id="diagram" class="content-container gap-0">
 
-      <!-- Styled Button -->
-      <button class="btn-primary" @click="triggerFileInput">{{$t("common.fileUpload")}}</button>
-      <button class="btn-primary" @click="downloadExcel">{{$t("common.downloadExcel")}}</button>
-      <button class="btn-primary"  @click="downloadSvg">{{$t("common.downloadSVG")}}</button>
-      <button
-          class="btn-primary"
-          @click="openModal"
-      >{{$t("navbar.menu.settings") }}
+    <!-- ── Toolbar ─────────────────────────────────────────── -->
+    <div class="flex items-center justify-between mb-3 py-2 animate-fade-up">
+
+      <div class="flex items-center gap-0.5">
+        <input type="file" ref="fileInput" @change="onFileChange"
+               accept=".xlsx" class="hidden" style="display: none;" />
+
+        <button class="btn-primary" @click="triggerFileInput">
+          <svg class="size-3 opacity-50" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 1v9M4 6l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          {{ $t("common.fileUpload") }}
+        </button>
+
+        <button class="btn-primary" @click="downloadExcel">
+          <svg class="size-3 opacity-50" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M8 1v9M4 10l4 4 4-4M2 13h12"/>
+          </svg>
+          {{ $t("common.downloadExcel") }}
+        </button>
+
+        <div class="w-px h-4 bg-border mx-1.5"></div>
+
+        <button class="btn-primary" @click="downloadSvg">
+          <svg class="size-3 opacity-50" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 6h6M5 10h4"/>
+          </svg>
+          {{ $t("common.downloadSVG") }}
+        </button>
+      </div>
+
+      <button class="btn-primary" @click="openModal">
+        <svg class="size-3 opacity-50" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4"/>
+        </svg>
+        {{ $t("navbar.menu.settings") }}
       </button>
-
-      <TransitionRoot appear :show="isOpen" as="template">
-        <Dialog @close="closeModal" class="relative z-10">
-          <TransitionChild
-              as="template"
-              enter="duration-300 ease-out"
-              enter-from="opacity-0"
-              enter-to="opacity-100"
-              leave="duration-200 ease-in"
-              leave-from="opacity-100"
-              leave-to="opacity-0"
-          >
-            <div class="fixed inset-0 bg-black/25" />
-          </TransitionChild>
-
-          <div class="fixed inset-0 overflow-y-auto">
-            <div
-                class="flex min-h-full items-center justify-center p-4 mt-12 mb-12 text-center"
-            >
-              <TransitionChild
-                  as="template"
-                  enter="duration-300 ease-out"
-                  enter-from="opacity-0 scale-95"
-                  enter-to="opacity-100 scale-100"
-                  leave="duration-200 ease-in"
-                  leave-from="opacity-100 scale-100"
-                  leave-to="opacity-0 scale-95"
-              >
-                <DialogPanel
-                    class="w-full max-w-screen-lg transform overflow-hidden rounded-2xl bg-white p-6 align-middle shadow-xl transition-all"
-                >
-                  <div class="flex flex-col justify-start">
-                    <MMForm @form-submit="closeModal"/>
-                  </div>
-
-                </DialogPanel>
-              </TransitionChild>
-            </div>
-          </div>
-        </Dialog>
-      </TransitionRoot>
     </div>
 
-    <div id="panelcontainer" class="w-full max-h-[80vh] mb-1 flex flex-row flex-grow bg-white
-                                    rounded-2xl select-none">
-      <div :style="{ flex: leftPanelFlex }" class="p-4 flex flex-col">
-        <h3>{{$t("common.fileContent")}}</h3>
-        <div v-if="gridData.length" class="flex-auto relative">
-          <div class="h-full w-full absolute overflow-scroll">
-            <canvas-datagrid
-                :data="gridData"
-                :editable="true"
-                @data-changed="handleDataChange"
-            />
+    <!-- ── Settings modal ──────────────────────────────────── -->
+    <TransitionRoot appear :show="isOpen" as="template">
+      <Dialog @close="closeModal" class="relative z-50">
+
+        <TransitionChild as="template"
+          enter="duration-200 ease-out" enter-from="opacity-0" enter-to="opacity-100"
+          leave="duration-150 ease-in"  leave-from="opacity-100" leave-to="opacity-0">
+          <div class="fixed inset-0 bg-ink/20 backdrop-blur-sm" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div class="flex min-h-full items-center justify-center p-6">
+            <TransitionChild as="template"
+              enter="duration-200 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100"
+              leave="duration-150 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
+              <DialogPanel
+                class="w-full max-w-screen-lg bg-surface border border-border rounded-sm
+                       p-6 shadow-xl shadow-ink/10 overflow-hidden">
+                <MMForm @form-submit="closeModal" />
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </div>
-        <p v-else class="text-gray-500">{{$t("common.noContent")}}</p>
+      </Dialog>
+    </TransitionRoot>
+
+    <!-- ── Panels ──────────────────────────────────────────── -->
+    <div id="panelcontainer"
+         class="w-full flex flex-row select-none animate-fade-up"
+         style="height: calc(100vh - 148px); min-height: 360px;">
+
+      <!-- Data grid -->
+      <div :style="{ flex: leftPanelFlex }" class="panel-surface min-w-0">
+        <div class="panel-label">
+          <span class="panel-dot"></span>
+          {{ $t("common.fileContent") }}
+        </div>
+        <div v-if="gridData.length" class="flex-1 relative overflow-hidden">
+          <div class="absolute inset-0 overflow-auto">
+            <canvas-datagrid :data="gridData" :editable="true" @data-changed="handleDataChange" />
+          </div>
+        </div>
+        <div v-else class="flex-1 flex flex-col items-center justify-center gap-2">
+          <svg class="size-8 text-ink-muted/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="3" y="3" width="18" height="18" rx="1"/>
+            <path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>
+          </svg>
+          <p class="text-[10px] uppercase tracking-[0.18em] m-0 text-text-muted">
+            {{ $t("common.noContent") }}
+          </p>
+        </div>
       </div>
-      <div
-          id="resizeHandle"
-          :style="{ flex: centralPanelFlex }"
-          class="cursor-col-resize flex items-center justify-center bg-gray-100"
-          @mousedown="startResizing"
-      >
-        <p class="text-center text-sm font-medium text-gray-500">||</p>
+
+      <!-- Resize handle -->
+      <div id="resizeHandle"
+           :style="{ flex: centralPanelFlex }"
+           class="cursor-col-resize flex items-center justify-center px-1 group shrink-0"
+           @mousedown="startResizing">
+        <div class="w-px h-10 bg-border group-hover:bg-amber/30 transition-colors duration-150"></div>
       </div>
-      <div :style="{ flex: rightPanelFlex }" class="p-4 flex flex-col">
-        <h3>{{$t("common.svgView")}}</h3>
+
+      <!-- SVG preview -->
+      <div :style="{ flex: rightPanelFlex }" class="panel-surface min-w-0">
+        <div class="panel-label">
+          <span class="panel-dot"></span>
+          {{ $t("common.svgView") }}
+        </div>
         <div v-if="svg"
-             class="h-full flex-auto relative overflow-hidden rounded-2xl"
+             class="flex-1 relative overflow-hidden"
              @wheel.prevent="zoomSvg"
              @mousedown="startPan"
              @mousemove="panSvg"
              @mouseup="endPan"
              @mouseleave="endPan">
-          <div
-              v-html="svg"
-              class="diagram h-full absolute"
-              :style="svgTransform"
-          />
+          <div v-html="svg" class="diagram absolute inset-0" :style="svgTransform" />
         </div>
-        <p v-else class="text-gray-500">{{$t("common.noContent")}}</p>
+        <div v-else class="flex-1 flex flex-col items-center justify-center gap-2">
+          <svg class="size-8 text-ink-muted/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="3" y="3" width="18" height="18" rx="1"/>
+            <path d="M7 17V9M11 17V7M15 17v-6M19 17v-4" stroke-linecap="round"/>
+          </svg>
+          <p class="text-[10px] uppercase tracking-[0.18em] m-0 text-text-muted">
+            {{ $t("common.noContent") }}
+          </p>
+        </div>
       </div>
     </div>
-    <p>{{$t("common.Blocks")}}: {{blockCount}}, {{$t("common.Towers")}}: {{towerCount}}</p>
+
+    <!-- ── Status bar ──────────────────────────────────────── -->
+    <div class="status-bar">
+      <span>{{ $t("common.Blocks") }}&nbsp;<span class="status-value">{{ blockCount }}</span></span>
+      <span class="status-divider"></span>
+      <span>{{ $t("common.Towers") }}&nbsp;<span class="status-value">{{ towerCount }}</span></span>
+    </div>
+
   </div>
 </template>
 
@@ -294,8 +323,9 @@ function generateDiagram(jsonData) {
       if (c2) {
         data[block][tower].tasks.push(c2);
       }
-      if (c3 && c4) {
-        data[block][tower].supports.push({ type: c3, label: c4 });
+      const conceptType = cell(row, 5);
+      if (conceptType && !data[block][tower].supports.some(s => s.type === conceptType)) {
+        data[block][tower].supports.push({ type: conceptType, label: conceptType });
       }
     }
   });
@@ -347,8 +377,6 @@ function endPan() {
 
 <style scoped>
 .content-container {
-  width: 100%; /* Assure que la largeur correspond au parent */
-  margin: 0 auto; /* Centre horizontalement */
-  overflow-x: hidden; /* Évite les débordements horizontaux */
+  overflow-x: hidden;
 }
 </style>

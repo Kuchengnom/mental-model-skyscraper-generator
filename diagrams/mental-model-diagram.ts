@@ -88,15 +88,20 @@ interface RenderedSupportItem {
 }
 
 const SUPPORT_COLORS: Record<string, string> = {
-  Source: "#D4E6F1",
-  Tool: "#D5F5E3",
-  Content: "#FDEBD0",
-  Feature: "#E8DAEF",
+  // Indi Young concept types
+  "inner thinking":     "#FFF9C4",
+  "emotional reaction": "#FADBD8",
+  "guiding principle":  "#D6EAF8",
+  // Generic support types (fallbacks for custom columns)
+  "source":   "#D4E6F1",
+  "tool":     "#D5F5E3",
+  "content":  "#FDEBD0",
+  "feature":  "#E8DAEF",
 };
 
 function getSupportColor(type: string, fallback: string): string {
-  const key = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
-  return SUPPORT_COLORS[key] ?? fallback;
+  const lower = type.toLowerCase();
+  return SUPPORT_COLORS[lower] ?? SUPPORT_COLORS[type] ?? fallback;
 }
 
 export function generateMentalModelDiagram(
@@ -298,28 +303,31 @@ export function generateMentalModelDiagram(
                 rx: 6,
               });
 
-              blockGroup.text(
-                {
-                  x: towerX + supportOpts.padding,
-                  y: supportY + typeLineHeight,
-                  "font-family": supportOpts.fontFamily,
-                  "font-size": Math.round(supportOpts.fontSize * 0.8),
-                  fill: supportOpts.textColor,
-                  "font-style": "italic",
-                },
-                support.type,
-              );
-
+              // Item label at the top
               blockGroup.textBlock(
                 {
                   x: towerX + supportOpts.padding,
-                  y: supportY + typeLineHeight + supportOpts.fontSize + supportOpts.padding,
+                  y: supportY + supportOpts.fontSize + supportOpts.padding,
                   "font-family": supportOpts.fontFamily,
                   "font-size": supportOpts.fontSize,
                   fill: supportOpts.textColor,
                 },
                 support.label,
                 supportOpts.fontSize,
+              );
+
+              // Type label as caption at the bottom
+              blockGroup.text(
+                {
+                  x: towerX + supportOpts.padding,
+                  y: supportY + support.height - Math.round(supportOpts.padding * 0.5),
+                  "font-family": supportOpts.fontFamily,
+                  "font-size": Math.round(supportOpts.fontSize * 0.8),
+                  fill: supportOpts.textColor,
+                  "font-style": "italic",
+                  "opacity": "0.65",
+                },
+                support.type,
               );
 
               supportY += support.height + supportOpts.gap;
