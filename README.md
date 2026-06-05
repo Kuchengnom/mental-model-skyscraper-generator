@@ -6,11 +6,7 @@ A tool for generating [Mental Model Diagrams](https://indiyoung.com/method/#mmsk
 
 ### Live version
 
-[katasc22.github.io/iaweb24-mmd-generator](https://katasc22.github.io/iaweb24-mmd-generator/)
-
-### Standalone desktop app
-
-Binaries for Windows and Linux are available on the [releases page](https://github.com/katasc22/iaweb24-mmd-generator/releases/latest).
+[kuchengnom.github.io/mental-model-skyscraper-generator](https://kuchengnom.github.io/mental-model-skyscraper-generator/)
 
 ---
 
@@ -98,12 +94,3 @@ Optional `basePath` argument for subdirectory deployments:
 npm run generate --basePath='/skyline/'
 ```
 
-### Build the standalone desktop app
-
-Requires [Rust](https://www.rust-lang.org/tools/install) and the generated static files (run `npm run generate` first).
-
-```sh
-npx tauri build
-```
-
-Binaries are output to `src-tauri/target/release/`.
