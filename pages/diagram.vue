@@ -271,8 +271,18 @@ function downloadSvg() {
     return;
   }
 
-  const svg = generateMentalModelDiagram(diagramData.value, dataStore.settings);
-  const blob = new Blob([svg], { type: "image/svg+xml" });
+  let svgContent = generateMentalModelDiagram(diagramData.value, dataStore.settings);
+  const scale = dataStore.globalDefaults.exportScale ?? 1;
+  if (scale !== 1) {
+    const match = svgContent.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+    if (match) {
+      const w = Math.round(parseFloat(match[1]) * scale);
+      const h = Math.round(parseFloat(match[2]) * scale);
+      svgContent = svgContent.replace('<svg ', `<svg width="${w}" height="${h}" `);
+    }
+  }
+
+  const blob = new Blob([svgContent], { type: "image/svg+xml" });
   const link = document.createElement("a");
   const url = URL.createObjectURL(blob);
   link.href = url;

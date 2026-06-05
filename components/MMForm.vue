@@ -30,6 +30,15 @@
       <label for="globalFontSize">{{$t('form.fontSize')}}</label>
       <input v-model="globalSettings.globalFontSize" id="globalFontSize" type="number" @change="updateSettings"/>
     </div>
+    <div class="grid-item">
+      <label>{{$t('form.exportScale')}}</label>
+      <div class="scale-options">
+        <label v-for="s in [1, 2, 4]" :key="s" :class="['scale-option', globalSettings.exportScale === s ? 'scale-option--active' : '']">
+          <input type="radio" :value="s" v-model="globalSettings.exportScale" @change="dataStore.updateGlobalSettings('exportScale', s)" class="sr-only" />
+          {{ s }}×
+        </label>
+      </div>
+    </div>
   </div>
 
   <!-- Element-Specific Settings Section-->
@@ -159,3 +168,31 @@ const submitForm = () => {
   emit('form-submit');
 };
 </script>
+
+<style scoped>
+.scale-options {
+  display: flex;
+  gap: 6px;
+}
+.scale-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 28px;
+  border: 1px solid var(--color-border, #c8c8c8);
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s, border-color 0.1s;
+}
+.scale-option:hover {
+  border-color: #888;
+}
+.scale-option--active {
+  background: var(--color-ink, #1a1a1a);
+  color: #fff;
+  border-color: var(--color-ink, #1a1a1a);
+}
+</style>

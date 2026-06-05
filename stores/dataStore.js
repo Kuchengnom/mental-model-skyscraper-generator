@@ -15,6 +15,7 @@ export const useDataStore = defineStore("dataStore", {
             globalFontFamily: "Arial",
             globalFontSize: 16,
             globalTextColor: "#000000",
+            exportScale: 1,
         },
         settings: {
             block: {
@@ -135,6 +136,9 @@ export const useDataStore = defineStore("dataStore", {
                     this.settings.block.fontSize = Number(updated_value)
                     this.settings.box.fontSize = Number(updated_value)
                     this.settings.tower.fontSize = Number(updated_value)
+                    break;
+                case "exportScale":
+                    this.globalDefaults.exportScale = Number(updated_value);
                     break;
                 default:
                     console.log("Element unknown:", element)

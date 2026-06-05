@@ -45,6 +45,7 @@
     "textColor": "Text Color",
     "fontFamily": "Font Family",
     "fontSize": "Font Size",
+    "exportScale": "Export Scale",
     "save": "Save"
   }
 }
