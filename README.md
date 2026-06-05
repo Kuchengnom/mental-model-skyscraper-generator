@@ -1,18 +1,78 @@
-# Skyline - Mental Model Generator
+# Skyline - Mental Model Diagram Generator
 
-## Web application
+A tool for generating [Mental Model Diagrams](https://indiyoung.com/method/#mmskyline) in the style of Indi Young. Upload a spreadsheet and get a skyline diagram you can export as SVG.
 
-You can find the official deployment with GitHub Pages
-in https://katasc22.github.io/iaweb24-mmd-generator/
+## Using the app
 
-## Standalone application
+### Live version
 
-Skyline is available for both Windows and Linux platforms. Check the latest
-binaries [here](https://github.com/katasc22/iaweb24-mmd-generator/releases/latest).
+[katasc22.github.io/iaweb24-mmd-generator](https://katasc22.github.io/iaweb24-mmd-generator/)
 
-## Building on your own
+### Standalone desktop app
 
-### Make sure to install dependencies:
+Binaries for Windows and Linux are available on the [releases page](https://github.com/katasc22/iaweb24-mmd-generator/releases/latest).
+
+---
+
+## Spreadsheet format
+
+The app reads `.xlsx` files. Each row represents one item in the diagram. Columns carry forward — you only need to repeat a value when it changes.
+
+| Col | Field | Purpose |
+|-----|-------|---------|
+| A | Mental Space | Top-level section (a group of related towers) |
+| B | Task Tower | Column within a Mental Space |
+| C | Atomic Task | A single task, thought, or feeling (upper skyline section) |
+| D | Support Type | Type of supporting item below the baseline: `Source`, `Tool`, `Content`, or `Feature` |
+| E | Support Item | Label for the supporting item |
+
+**Columns D and E are optional.** Files without them render the skyline section only.
+
+### Example layout
+
+```
+Mental Space      | Task Tower    | Atomic Task              | Support Type | Support Item
+------------------+---------------+--------------------------+--------------+-------------------
+Finding a route   | Planning      | Check the map            |              |
+                  |               | Ask a local              |              |
+                  |               |                          | Tool         | Maps app
+                  |               |                          | Content      | Tourist guide
+                  | Navigating    | Follow street signs      |              |
+                  |               |                          | Source       | City website
+Booking a hotel   | Comparing     | Read reviews             |              |
+                  |               | Compare prices           |              |
+                  |               |                          | Feature      | Price filter
+```
+
+**Important:** the spreadsheet must be sorted by Mental Space, then by Task Tower. If rows are out of order, the diagram will mis-render.
+
+### Support type colors
+
+Items in the lower section are color-coded by type:
+
+| Type | Color |
+|------|-------|
+| Source | Blue `#D4E6F1` |
+| Tool | Green `#D5F5E3` |
+| Content | Orange `#FDEBD0` |
+| Feature | Purple `#E8DAEF` |
+
+---
+
+## Workflow
+
+1. Open the app and click **Open Spreadsheet** to upload your `.xlsx` file.
+2. The diagram renders immediately in the right panel.
+3. Edit cells directly in the left panel — the diagram updates live.
+4. Use **Settings** to adjust colors, fonts, and sizes for each diagram element.
+5. Click **Save Diagram** to download the result as an SVG file.
+6. Click **Save Spreadsheet** to download your edited data as `.xlsx`.
+
+---
+
+## Building from source
+
+### Install dependencies
 
 ```sh
 npm install
@@ -20,35 +80,30 @@ npm install
 
 ### Development server
 
-Start the development server on http://localhost:3000
-
 ```sh
 npm run dev
 ```
 
-### Generate files for deployment:
+Opens at `http://localhost:3000`.
+
+### Generate static files for deployment
 
 ```sh
 npm run generate
 ```
 
-Optional arguments:
-
-- `basePath`: the base path where the application will be deployed. For example:
+Optional `basePath` argument for subdirectory deployments:
 
 ```sh
 npm run generate --basePath='/skyline/'
 ```
 
-### Building the standalone application:
+### Build the standalone desktop app
 
-Requires [Rust](https://www.rust-lang.org/tools/install) installed and the application generated as
-explained above.
+Requires [Rust](https://www.rust-lang.org/tools/install) and the generated static files (run `npm run generate` first).
 
 ```sh
 npx tauri build
 ```
 
-The binaries can be found at `src-tauri/target/release/`.
-
-
+Binaries are output to `src-tauri/target/release/`.

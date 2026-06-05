@@ -271,21 +271,32 @@ function generateDiagram(jsonData) {
   let block = null;
   let tower = null;
   const data = {};
+  const cell = (row, idx) => row[idx] != null ? String(row[idx]).trim() : '';
   jsonData
   .slice(1)
   .forEach((row) => {
-    if (row[0]?.trim()) {
-      block = row[0];
+    const c0 = cell(row, 0);
+    const c1 = cell(row, 1);
+    const c2 = cell(row, 2);
+    const c3 = cell(row, 3);
+    const c4 = cell(row, 4);
+    if (c0) {
+      block = c0;
       data[block] = {};
       newBlockCount++;
     }
-    if (row[1]?.trim()) {
-      tower = row[1];
-      data[block][tower] = [];
+    if (c1) {
+      tower = c1;
+      data[block][tower] = { tasks: [], supports: [] };
       newTowerCount++;
     }
-    if (row[2]?.trim()) {
-      data[block][tower].push(row[2]);
+    if (block && tower) {
+      if (c2) {
+        data[block][tower].tasks.push(c2);
+      }
+      if (c3 && c4) {
+        data[block][tower].supports.push({ type: c3, label: c4 });
+      }
     }
   });
   // Generate the SVG and update the state

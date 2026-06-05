@@ -46,6 +46,15 @@ export const useDataStore = defineStore("dataStore", {
                 fontSize: 14,
                 textColor: "#000000",
             },
+            support: {
+                padding: 8,
+                gap: 8,
+                backgroundColor: "#F2F3F4",
+                strokeColor: "#c8c8c8",
+                fontFamily: "Arial",
+                fontSize: 12,
+                textColor: "#333333",
+            },
         },
     }),
     actions: {
@@ -87,6 +96,15 @@ export const useDataStore = defineStore("dataStore", {
                 this.settings.box.fontFamily = newSettings.box.fontFamily ?? this.settings.box.fontFamily;
                 this.settings.box.fontSize = newSettings.box.fontSize ?? this.settings.box.fontSize;
                 this.settings.box.textColor = newSettings.box.textColor ?? this.settings.box.textColor;
+            }
+
+            // Update support settings
+            if (newSettings.support) {
+                this.settings.support.backgroundColor = newSettings.support.backgroundColor ?? this.settings.support.backgroundColor;
+                this.settings.support.strokeColor = newSettings.support.strokeColor ?? this.settings.support.strokeColor;
+                this.settings.support.fontFamily = newSettings.support.fontFamily ?? this.settings.support.fontFamily;
+                this.settings.support.fontSize = newSettings.support.fontSize ?? this.settings.support.fontSize;
+                this.settings.support.textColor = newSettings.support.textColor ?? this.settings.support.textColor;
             }
         },
         updateGlobalSettings(element, updated_value){
