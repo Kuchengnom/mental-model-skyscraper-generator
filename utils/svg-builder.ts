@@ -32,28 +32,27 @@ export class SvgBuilder {
   }
 
   text(attributes: Attributes, text: string) {
-    const textElement = createElement("text", attributes, text);
+    const textElement = createElement("text", attributes, escapeXml(text));
     this.elements.push(textElement);
     return this;
   }
 
   textBlock(attributes: Attributes, lines: string[], lineHeight: number) {
-    return this.text(
-      attributes,
-      lines
-        .map((line, i) => {
-          const dy = i === 0 ? 0 : lineHeight;
-          return createElement(
-            "tspan",
-            {
-              x: attributes.x,
-              dy,
-            },
-            line,
-          );
-        })
-        .join(""),
-    );
+    const tspans = lines
+      .map((line, i) => {
+        const dy = i === 0 ? 0 : lineHeight;
+        return createElement(
+          "tspan",
+          {
+            x: attributes.x,
+            dy,
+          },
+          escapeXml(line),
+        );
+      })
+      .join("");
+    this.elements.push(createElement("text", attributes, tspans));
+    return this;
   }
 
   build(): string {
@@ -83,6 +82,15 @@ function createElement(
 function objectToXmlAttributes(attributes: Attributes): string {
   return Object.entries(attributes)
     .filter(([, value]) => value !== undefined)
-    .map(([key, value]) => `${key}="${value}"`)
+    .map(([key, value]) => `${key}="${escapeXml(String(value))}"`)
     .join(" ");
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
